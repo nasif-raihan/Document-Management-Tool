@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local configuration file
+.env
+
+# Database files
+*.db
+*.sqlite3
+
+# Log files
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Compiled Python files
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+venv3/
+.env/
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Dependency directories
+/node_modules/
+/bower_components/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+media/
