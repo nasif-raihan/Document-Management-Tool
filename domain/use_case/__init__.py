@@ -4,3 +4,5 @@ from .get_all_documents import GetAllDocuments
 from .get_document_details import GetDocumentDetails
 from .update_document import UpdateDocument
 from .share_document import ShareDocument
+from .get_share_document_details import GetShareDocumentDetails
+from .update_share_document_details import UpdateShareDocumentDetails
