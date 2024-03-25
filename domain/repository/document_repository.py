@@ -13,6 +13,10 @@ class DocumentRepository(ABC):
         raise NotImplementedError("Implement get_document method")
 
     @abstractmethod
+    def get_all_documents(self) -> list[Document]:
+        raise NotImplementedError("Implement get_all_documents method")
+
+    @abstractmethod
     def update_document(self, document: Document) -> Document:
         raise NotImplementedError("Implement update_document method")
 

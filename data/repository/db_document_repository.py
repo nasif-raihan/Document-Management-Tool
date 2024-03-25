@@ -24,6 +24,10 @@ class DBDocumentRepository(DocumentRepository):
             raise RuntimeError("Invalid document information")
         return self.to_document(db_document)
 
+    def get_all_documents(self) -> list[Document]:
+        db_documents = DBDocument.objects.all()
+        return [self.to_document(db_document) for db_document in db_documents]
+
     def update_document(self, document: Document) -> Document:
         try:
             db_document = DBDocument.objects.get(
