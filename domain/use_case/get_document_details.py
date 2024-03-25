@@ -2,7 +2,7 @@ from domain.model import Document, User
 from domain.repository import DocumentRepository
 
 
-class GetDocumentDetail:
+class GetDocumentDetails:
     def __init__(self, document_repository: DocumentRepository):
         self.document_repository = document_repository
 
