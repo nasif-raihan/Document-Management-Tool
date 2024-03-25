@@ -19,7 +19,3 @@ class UserAccessDetailRepository(ABC):
         self, user_access_detail: UserAccessDetail
     ) -> UserAccessDetail:
         raise NotImplementedError("Implement update_user_access_detail method")
-
-    @abstractmethod
-    def delete_user_access_detail(self, user_access_detail_id: int) -> UserAccessDetail:
-        raise NotImplementedError("Implement delete_user_access_detail method")
