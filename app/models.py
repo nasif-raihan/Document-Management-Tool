@@ -14,13 +14,13 @@ class Document(models.Model):
         return f"{self.title}"
 
 
-class DocumentPermission(models.Model):
+class UserAccessDetail(models.Model):
     READ_ONLY = "RO"
     EDIT = "ED"
     PERMISSION_CHOICES = {READ_ONLY: "Read Only", EDIT: "Edit"}
     document = models.ForeignKey(to=Document, on_delete=models.CASCADE)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    permission = models.CharField(
+    permission_type = models.CharField(
         max_length=2, choices=PERMISSION_CHOICES, default=EDIT
     )
 
