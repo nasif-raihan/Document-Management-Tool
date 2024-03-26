@@ -2,6 +2,7 @@ from domain.use_case import (
     ShareDocument,
     GetShareDocumentDetails,
     UpdateShareDocumentDetails,
+    DeleteShareDocumentDetails,
 )
 from .repository import Repository
 
@@ -22,5 +23,10 @@ class ShareDocumentUseCase:
 
     def update_share_document_details(self) -> UpdateShareDocumentDetails:
         return UpdateShareDocumentDetails(
+            user_access_detail_repository=self.repository.user_access_detail_repository
+        )
+
+    def delete_share_document_details(self) -> DeleteShareDocumentDetails:
+        return DeleteShareDocumentDetails(
             user_access_detail_repository=self.repository.user_access_detail_repository
         )
