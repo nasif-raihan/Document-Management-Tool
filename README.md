@@ -15,7 +15,7 @@ This Django project is a document management tool designed to facilitate efficie
       - **Request Payload:**
         ```json
         {
-            "username": "First Document",
+            "username": "test_user",
             "email": "test@mail.com",
             "password1": "password",
             "password2": "password"
@@ -25,7 +25,7 @@ This Django project is a document management tool designed to facilitate efficie
       - **Request Payload:**
         ```json
         {
-            "username": "First Document",
+            "username": "test_user",
             "password": "password"
         }
         ```
