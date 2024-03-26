@@ -210,4 +210,4 @@ This Django project is a document management tool designed to facilitate efficie
 2. Access the API endpoints using a REST client like Postman or through frontend applications.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://opensource.org/license/mit) file for details.
