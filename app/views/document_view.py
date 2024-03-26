@@ -51,6 +51,7 @@ class DocumentView(View):
                 "sharedUserUsernames": [
                     share_user.username for share_user in document.shared_with
                 ],
+                "message": "Document created successfully",
             },
             status=200,
         )
@@ -87,6 +88,7 @@ class DocumentView(View):
                 "sharedUserUsernames": [
                     share_user.username for share_user in document.shared_with
                 ],
+                "message": "Document created successfully",
             },
             status=201,
         )
@@ -123,6 +125,7 @@ class DocumentView(View):
                 "sharedUserUsernames": [
                     share_user.username for share_user in document.shared_with
                 ],
+                "message": "Document updated successfully",
             }
         )
 
@@ -140,11 +143,7 @@ class DocumentView(View):
         return JsonResponse(
             data={
                 "documentTitle": document.title,
-                "content": document.content,
-                "documentOwnerUsername": document.owner.username,
-                "sharedUserUsernames": [
-                    share_user.username for share_user in document.shared_with
-                ],
+                "message": "Document deleted successfully",
             },
             status=200,
         )

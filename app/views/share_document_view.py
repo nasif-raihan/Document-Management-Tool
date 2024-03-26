@@ -74,7 +74,8 @@ class ShareDocumentView(View):
                 "documentTitle": document_title,
                 "documentOwnerUsername": document_owner,
                 "permissionType": permission_type,
-                "sharedUserUsernames": shared_user_usernames
+                "sharedUserUsernames": shared_user_usernames,
+                "message": "Document shared successfully"
             },
             status=201
         )
@@ -116,7 +117,8 @@ class ShareDocumentView(View):
                 "documentTitle": document_title,
                 "documentOwnerUsername": document_owner,
                 "permissionType": permission_type,
-                "sharedUserUsernames": shared_user_usernames
+                "sharedUserUsernames": shared_user_usernames,
+                "message": "Document access updated successfully"
             },
             status=200
         )
