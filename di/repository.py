@@ -1,5 +1,13 @@
-from data.repository import DBDocumentRepository, DBUserAccessDetailRepository
-from domain.repository import DocumentRepository, UserAccessDetailRepository
+from data.repository import (
+    DBDocumentRepository,
+    DBUserAccessDetailRepository,
+    DBUserRepository,
+)
+from domain.repository import (
+    DocumentRepository,
+    UserAccessDetailRepository,
+    UserRepository,
+)
 
 
 class Repository:
@@ -10,3 +18,7 @@ class Repository:
     @property
     def user_access_detail_repository(self) -> UserAccessDetailRepository:
         return DBUserAccessDetailRepository()
+
+    @property
+    def user_repository(self) -> UserRepository:
+        return DBUserRepository()
