@@ -7,6 +7,6 @@ class UpdateShareDocumentDetails:
         self.user_access_detail_repository = user_access_detail_repository
 
     def invoke(self, user_access_detail: UserAccessDetail) -> UserAccessDetail:
-        return self.user_access_detail_repository.update_user_access_detail(
+        return self.user_access_detail_repository.update_user_access_details(
             user_access_detail
         )

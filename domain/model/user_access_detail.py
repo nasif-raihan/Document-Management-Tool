@@ -6,12 +6,10 @@ from .user import User
 class UserAccessDetail:
     def __init__(
         self,
-        user_access_detail_id: int,
-        user: User,
+        shared_user: User,
         document: Document,
         permission_type: PermissionType,
     ):
-        self.user_access_detail_id = user_access_detail_id
-        self.user = user
+        self.user = shared_user
         self.document = document
         self.permission_type = permission_type
