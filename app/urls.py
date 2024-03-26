@@ -5,6 +5,7 @@ from app import forms
 from app import views as app_views
 
 urlpatterns = [
+    path("registration/", app_views.RegistrationView.as_view(), name="registration"),
     path(
         "accounts/login/",
         auth_views.LoginView.as_view(
