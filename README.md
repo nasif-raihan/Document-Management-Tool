@@ -168,7 +168,6 @@ This Django project is a document management tool designed to facilitate efficie
              "documentTitle": "Document to be updated",
              "documentOwnerUsername": "test_user",
              "permissionType": "Edit",
-             "sharedUserUsernames
              "sharedUserUsernames": ["user3", "user4"]
          }
          ```
