@@ -14,9 +14,10 @@ class DocumentView(View):
         self.__use_case = DocumentUseCase()
 
     def get(self, request) -> JsonResponse:
-        title = request.GET.get("title")
-        owner = request.GET.get("owner")
+        title = request.GET.get("documentTitle")
+        document_owner_username = request.GET.get("documentOwnerUsername")
 
+        owner = self.__use_case.
         document = self.__use_case.get_document_details().invoke(
             title=title, owner=owner
         )
