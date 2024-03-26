@@ -9,11 +9,22 @@ from .repository import Repository
 
 
 class DocumentUseCase:
+    __instance = None
+
     def __init__(self):
-        self.repository = Repository()
+        if self.__instance:
+            raise RuntimeError("An instance of DocumentUseCase is already running")
+
+        self.__repository = Repository()
+
+    @classmethod
+    def __get_instance(cls) -> "DocumentUseCase":
+        if cls.__instance is None:
+            cls.__instance = DocumentUseCase()
+        return cls.__instance
 
     def add_document(self) -> AddDocument:
-        return AddDocument(document_repository=self.repository.document_repository)
+        return AddDocument(document_repository=self.__repository.document_repository)
 
     def delete_document(self) -> DeleteDocument:
         return DeleteDocument(document_repository=self.repository.document_repository)

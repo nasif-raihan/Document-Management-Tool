@@ -11,6 +11,18 @@ from domain.repository import (
 
 
 class Repository:
+    __instance = None
+
+    def __init__(self):
+        if self.__instance:
+            raise RuntimeError("An instance of Repository is already running")
+
+    @classmethod
+    def __get_instance(cls) -> "Repository":
+        if cls.__instance is None:
+            cls.__instance = Repository()
+        return cls.__instance
+
     @property
     def document_repository(self) -> DocumentRepository:
         return DBDocumentRepository()
