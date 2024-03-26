@@ -18,6 +18,24 @@ class DocumentView(View):
         title = request.GET.get("documentTitle")
         document_owner_username = request.GET.get("documentOwnerUsername")
 
+        if not (title and document_owner_username):
+            documents = self.__document_use_case.get_all_documents().invoke()
+
+            return JsonResponse(
+                data={
+                    "documentTitle": [document.title for document in documents],
+                    "content": [document.content for document in documents],
+                    "documentOwnerUsername": [
+                        document.owner.username for document in documents
+                    ],
+                    "sharedUserUsernames": [
+                        share_user.username
+                        for document in documents
+                        for share_user in document.shared_with
+                    ],
+                },
+                status=200,
+            )
         owner = self.__user_use_case.get_user().invoke(username=document_owner_username)
         document = self.__document_use_case.get_document_details().invoke(
             title=title, owner=owner
@@ -93,7 +111,7 @@ class DocumentView(View):
                 form.cleaned_data.get("title"),
                 form.cleaned_data.get("content"),
                 form.cleaned_data.get("owner"),
-                form.cleaned_data.get("sharedWith"),
+                form.cleaned_data.get("shared_with"),
             )
         )
 
