@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}User Registration{% endblock title %}
+{% block content %}
+<main class="container mx-auto max-w-md px-4 py-8">
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h2 class="text-2xl mb-4">User Registration</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="id_username">
+                    Username
+                </label>
+                {{ form.username }}
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="id_email">
+                    Email
+                </label>
+                {{ form.email }}
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="id_password1">
+                    Password
+                </label>
+                {{ form.password1 }}
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="id_password2">
+                    Confirm Password
+                </label>
+                {{ form.password2 }}
+            </div>
+            <div class="flex items-center justify-between">
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        type="submit">
+                    Register
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock content %}
