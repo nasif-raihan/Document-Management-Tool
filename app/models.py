@@ -7,8 +7,8 @@ class Document(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    shared_with = models.ManyToManyField(to=User, through="DocumentPermission")
+    owner = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='owned_document')
+    shared_with = models.ManyToManyField(to=User, through="UserAccessDetail", related_name='shared_documents')
 
     def __str__(self):
         return f"{self.title}"
