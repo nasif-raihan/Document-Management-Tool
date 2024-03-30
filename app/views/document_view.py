@@ -21,9 +21,17 @@ class DocumentView(View):
         title = request.GET.get("documentTitle")
         owner_username = request.GET.get("documentOwnerUsername")
 
-        if not (title and owner_username):
-            documents = self.__document_use_case.get_all_documents().invoke()
+        # fmt: off
+        logger.debug(f"documentTitle={request.GET.get('documentTitle')}")
+        logger.debug(f"{title=}")
+        logger.debug(f"documentOwnerUsername={request.GET.get('documentOwnerUsername')}")
+        logger.debug(f"{owner_username=}")
+        # fmt: on
 
+        if title is None and owner_username is None:
+            documents = self.__document_use_case.get_all_documents().invoke()
+            for document in documents:
+                print(f"{document=}")
             return JsonResponse(
                 data={
                     "documentTitle": [document.title for document in documents],
@@ -32,21 +40,20 @@ class DocumentView(View):
                         document.owner.username for document in documents
                     ],
                     "sharedUserUsernames": [
-                        share_user.username
-                        for document in documents
-                        for share_user in document.shared_with
+                        document.shared_with for document in documents
                     ],
                     "message": "Fetched all created documents.",
                 },
                 status=200,
             )
+
         owner = self.__user_use_case.get_user().invoke(username=owner_username)
         document = self.__document_use_case.get_document_details().invoke(
             title=title, owner_username=owner.username
         )
         if document is None:
             return JsonResponse(data={"message": "Invalid request payload"})
-
+        print(f"{document.title=}")
         return JsonResponse(
             data={
                 "documentTitle": document.title,
