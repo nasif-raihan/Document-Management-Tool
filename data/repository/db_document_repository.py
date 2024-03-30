@@ -1,25 +1,48 @@
-from app.models import Document as DBDocument
-from domain.model import User, Document
+import logging
+
+from app.models import Document as DBDocument, User as DBUser
+from domain.model import Document
 from domain.repository import DocumentRepository
+from .db_user_repository import DBUserRepository
+
+logger = logging.getLogger(__name__)
 
 
 class DBDocumentRepository(DocumentRepository):
+    def __init__(self):
+        super().__init__()
+        self._db_user_repository = DBUserRepository.get_instance()
+
     def add_document(self, document: Document) -> Document:
-        if self.get_document(title=document.title, owner=document.owner):
-            return self.update_document(document)
-
-        db_document = DBDocument(
-            title=document.title,
-            content=document.content,
-            owner=document.owner,
-            shared_with=document.shared_with,
-        )
-        db_document.save()
-        return self.to_document(db_document)
-
-    def get_document(self, title: str, owner: User) -> Document:
         try:
-            db_document = DBDocument.objects.get(title=title, owner=owner)
+            document = self.get_document(
+                title=document.title, owner_username=document.owner.username
+            )
+        except RuntimeError:
+            shared_with_users = []
+            for shared_user in document.shared_with:
+                shared_with_user = self._db_user_repository.get_user(
+                    username=shared_user.username
+                )
+                shared_with_users.append(shared_with_user)
+            db_document = DBDocument(
+                title=document.title,
+                content=document.content,
+                owner=DBUser.objects.get(username=document.owner.username),
+            )
+            db_document.save()
+            db_document.shared_with = shared_with_users
+
+            return self.to_document(db_document)
+        return self.update_document(document)
+
+    def get_document(self, title: str, owner_username: str) -> Document | None:
+        try:
+            logger.debug(f"{owner_username=}")
+            db_document = DBDocument.objects.get(
+                title=title, owner__username=owner_username
+            )
+            logger.debug(f"{db_document=}")
         except DBDocument.DoesNotExist:
             raise RuntimeError("Invalid document information")
         return self.to_document(db_document)
@@ -42,8 +65,8 @@ class DBDocumentRepository(DocumentRepository):
         db_document.shared_with = document.shared_with
         return self.to_document(db_document)
 
-    def delete_document(self, title: str, owner: User) -> Document:
-        document = self.get_document(title, owner)
+    def delete_document(self, title: str, owner_username: str) -> Document:
+        document = self.get_document(title, owner_username)
         db_document = self.to_db_document(document)
         db_document.delete()
         return document
