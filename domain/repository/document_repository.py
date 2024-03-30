@@ -9,7 +9,7 @@ class DocumentRepository(ABC):
         raise NotImplementedError("Implement add_document method")
 
     @abstractmethod
-    def get_document(self, title: str, owner: User) -> Document:
+    def get_document(self, title: str, owner_username: str) -> Document | None:
         raise NotImplementedError("Implement get_document method")
 
     @abstractmethod
@@ -21,5 +21,5 @@ class DocumentRepository(ABC):
         raise NotImplementedError("Implement update_document method")
 
     @abstractmethod
-    def delete_document(self, title: str, owner: User) -> Document:
+    def delete_document(self, title: str, owner_username: str) -> Document:
         raise NotImplementedError("Implement delete_document method")

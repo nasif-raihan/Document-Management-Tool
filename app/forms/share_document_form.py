@@ -10,9 +10,7 @@ class ShareDocumentForm(forms.ModelForm):
     document_title = forms.CharField(max_length=200)
     document_owner_username = forms.CharField(max_length=150)
     permission_type = forms.ChoiceField(choices=UserAccessDetail.PERMISSION_CHOICES)
-    shared_user_usernames = forms.CharField(
-        max_length=1500
-    )  # max 10 usernames at a time
+    shared_user_usernames = forms.CharField(max_length=1500)  # maximum 10 usernames
 
     class Meta:
         model = UserAccessDetail
@@ -26,7 +24,7 @@ class ShareDocumentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["permission_type"].choices = UserAccessDetail.PERMISSION_CHOICES
-        self.__repository = Repository()
+        self.__repository = Repository.get_instance()
 
     def clean_shared_user_usernames(self):
         shared_user_usernames = self.cleaned_data.get("shared_user_usernames")
@@ -45,14 +43,14 @@ class ShareDocumentForm(forms.ModelForm):
     def save(self, commit=True):
         document_title = self.cleaned_data.get("document_title")
         document_owner_username = self.cleaned_data.get("document_owner_username")
-        shared_user_usernames = self.cleaned_data.get("shared_person_username")
+        shared_user_usernames = self.cleaned_data.get("shared_user_usernames")
         permission_type = self.cleaned_data.get("permission_type")
 
         document_owner = self.__repository.user_repository.get_user(
             username=document_owner_username
         )
         document = self.__repository.document_repository.get_document(
-            title=document_title, owner=document_owner
+            title=document_title, owner_username=document_owner.username
         )
         user_access_detail_list = []
         for shared_person_username in shared_user_usernames:

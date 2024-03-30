@@ -9,10 +9,10 @@ class UserUseCase:
         if self.__instance:
             raise RuntimeError("An instance of UserUseCase is already running")
 
-        self.__repository = Repository()
+        self.__repository = Repository.get_instance()
 
     @classmethod
-    def __get_instance(cls) -> "UserUseCase":
+    def get_instance(cls) -> "UserUseCase":
         if cls.__instance is None:
             cls.__instance = UserUseCase()
         return cls.__instance

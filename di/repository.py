@@ -18,7 +18,7 @@ class Repository:
             raise RuntimeError("An instance of Repository is already running")
 
     @classmethod
-    def __get_instance(cls) -> "Repository":
+    def get_instance(cls) -> "Repository":
         if cls.__instance is None:
             cls.__instance = Repository()
         return cls.__instance
@@ -33,4 +33,4 @@ class Repository:
 
     @property
     def user_repository(self) -> UserRepository:
-        return DBUserRepository()
+        return DBUserRepository.get_instance()

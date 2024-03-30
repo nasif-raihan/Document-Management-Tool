@@ -14,10 +14,10 @@ class ShareDocumentUseCase:
         if self.__instance:
             raise RuntimeError("An instance of ShareDocumentUseCase is already running")
 
-        self.__repository = Repository()
+        self.__repository = Repository.get_instance()
 
     @classmethod
-    def __get_instance(cls) -> "ShareDocumentUseCase":
+    def get_instance(cls) -> "ShareDocumentUseCase":
         if cls.__instance is None:
             cls.__instance = ShareDocumentUseCase()
         return cls.__instance
