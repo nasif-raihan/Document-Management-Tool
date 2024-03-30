@@ -1,5 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 
 from app import forms
 from app import views as app_views
@@ -20,9 +21,9 @@ urlpatterns = [
     ),
     # fmt: off
     # Document URLS
-    path('documents/', app_views.DocumentView.as_view(), name='document'),
+    path('documents/', csrf_exempt(app_views.DocumentView.as_view()), name='document'),
 
     # Share Details URLS
-    path('share-details/', app_views.ShareDocumentView.as_view(), name='share-details'),
+    path('share-details/', csrf_exempt(app_views.ShareDocumentView.as_view()), name='share-details'),
     # fmt: off
 ]
