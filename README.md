@@ -56,13 +56,10 @@ This Django project is a document management tool designed to facilitate efficie
        - **Request Payload:**
          ```json
          {
-             "title": "First Document",
+             "documentTitle": "First Document",
              "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-             "owner": {
-                 "username": "test_user",
-                 "password": "password"
-             },
-             "sharedWith": ["user1", "user2"]
+             "documentOwnerUsername": "test_user",
+             "sharedUserUsernames": ["user1", "user2"]
          }
          ```
        - **Response:**
@@ -80,13 +77,10 @@ This Django project is a document management tool designed to facilitate efficie
        - **Request Payload:**
          ```json
          {
-             "title": "Updated Document Title",
+             "documentTitle": "Updated Document Title",
              "content": "Updated content here",
-             "owner": {
-                 "username": "test_user",
-                 "password": "password"
-             },
-             "sharedWith": ["user1", "user2"]
+             "documentOwnerUsername": "test_user",
+             "sharedUserUsernames": ["user1", "user2"]
          }
          ```
        - **Response:**
