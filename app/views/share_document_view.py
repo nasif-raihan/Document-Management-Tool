@@ -11,8 +11,8 @@ from ..forms import ShareDocumentForm
 class ShareDocumentView(View):
     def __init__(self):
         super().__init__()
-        self.__document_use_case = DocumentUseCase()
         self.__user_use_case = UserUseCase()
+        self.__document_use_case = DocumentUseCase()
         self.__share_document_use_case = ShareDocumentUseCase()
 
     def get(self, request) -> JsonResponse:
@@ -55,19 +55,20 @@ class ShareDocumentView(View):
         permission_type = form.cleaned_data.get("permission_type")
         document_owner_username = form.cleaned_data.get("document_owner_username")
         shared_user_usernames = form.cleaned_data.get("shared_user_usernames")
-        user_access_detail_list = []
+
         # fmt: off
         document_owner = self.__user_use_case.get_user().invoke(username=document_owner_username)
-        document = self.__document_use_case.get_document_details().invoke(title=document_title, owner=document_owner)
+        document = self.__document_use_case.get_document_details().invoke(
+            title=document_title, owner_username=document_owner.username
+        )
         for shared_user_username in shared_user_usernames:
             shared_user = self.__user_use_case.get_user().invoke(username=shared_user_username)
-            user_access_detail = self.__share_document_use_case.share_document().invoke(
+            self.__share_document_use_case.share_document().invoke(
                 UserAccessDetail(
                     shared_user=shared_user, document=document, permission_type=permission_type,
                 )
             )
-            user_access_detail_list.append(user_access_detail)
-            # fmt: on
+        # fmt: on
 
         return JsonResponse(
             data={
@@ -75,10 +76,11 @@ class ShareDocumentView(View):
                 "documentOwnerUsername": document_owner,
                 "permissionType": permission_type,
                 "sharedUserUsernames": shared_user_usernames,
-                "message": "Document shared successfully"
+                "message": "Document shared successfully",
             },
-            status=201
+            status=201,
         )
+        # fmt: on
 
     def put(self, request) -> JsonResponse:
         try:
@@ -98,19 +100,19 @@ class ShareDocumentView(View):
         permission_type = form.cleaned_data.get("permission_type")
         document_owner_username = form.cleaned_data.get("document_owner_username")
         shared_user_usernames = form.cleaned_data.get("shared_user_usernames")
-        user_access_detail_list = []
         # fmt: off
         document_owner = self.__user_use_case.get_user().invoke(username=document_owner_username)
-        document = self.__document_use_case.get_document_details().invoke(title=document_title, owner=document_owner)
+        document = self.__document_use_case.get_document_details().invoke(
+            title=document_title, owner_username=document_owner.username
+        )
         for shared_user_username in shared_user_usernames:
             shared_user = self.__user_use_case.get_user().invoke(username=shared_user_username)
-            user_access_detail = self.__share_document_use_case.update_share_document_details().invoke(
+            self.__share_document_use_case.update_share_document_details().invoke(
                 UserAccessDetail(
                     shared_user=shared_user, document=document, permission_type=permission_type,
                 )
             )
-            user_access_detail_list.append(user_access_detail)
-            # fmt: on
+        # fmt: on
 
         return JsonResponse(
             data={
@@ -118,9 +120,9 @@ class ShareDocumentView(View):
                 "documentOwnerUsername": document_owner,
                 "permissionType": permission_type,
                 "sharedUserUsernames": shared_user_usernames,
-                "message": "Document access updated successfully"
+                "message": "Document access updated successfully",
             },
-            status=200
+            status=200,
         )
 
     def delete(self, request) -> JsonResponse:
