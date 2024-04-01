@@ -164,6 +164,7 @@ class DocumentView(View):
             payload = json.loads(request.body)
             title = payload.get("documentTitle")
             owner_username = payload.get("documentOwnerUsername")
+            logger.debug(f"{title=}")
         except json.JSONDecodeError as e:
             return JsonResponse(
                 data={"message": "Invalid request payload", "error": str(e)}

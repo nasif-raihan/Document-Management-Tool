@@ -14,27 +14,27 @@ class DBDocumentRepository(DocumentRepository):
         self._db_user_repository = DBUserRepository.get_instance()
 
     def add_document(self, document: Document) -> Document:
-        try:
-            document = self.get_document(
-                title=document.title, owner_username=document.owner.username
-            )
-        except RuntimeError:
-            shared_with_users = []
-            for shared_user in document.shared_with:
-                shared_with_user = self._db_user_repository.get_user(
-                    username=shared_user.username
-                )
-                shared_with_users.append(shared_with_user)
+        old_document = self.get_document(
+            title=document.title, owner_username=document.owner.username
+        )
+        if old_document is None:
             db_document = DBDocument(
                 title=document.title,
                 content=document.content,
                 owner=DBUser.objects.get(username=document.owner.username),
             )
             db_document.save()
-            db_document.shared_with = shared_with_users
 
+            for shared_user in document.shared_with:
+                shared_with_user = self._db_user_repository.get_user(
+                    username=shared_user.username
+                )
+                if shared_with_user:
+                    db_document.shared_with.add(shared_with_user)
+                else:
+                    db_document.shared_with.create(username=shared_with_user.username)
             return self.to_document(db_document)
-        return self.update_document(document)
+        return self.update_document(old_document)
 
     def get_document(self, title: str, owner_username: str) -> Document | None:
         try:
