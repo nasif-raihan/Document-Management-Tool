@@ -6,5 +6,5 @@ class DeleteDocument:
     def __init__(self, document_repository: DocumentRepository):
         self.document_repository = document_repository
 
-    def invoke(self, title: str, owner: User) -> Document:
-        return self.document_repository.delete_document(title, owner)
+    def invoke(self, title: str, owner_username: str) -> bool:
+        return self.document_repository.delete_document(title, owner_username)

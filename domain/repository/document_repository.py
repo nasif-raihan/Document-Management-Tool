@@ -21,5 +21,5 @@ class DocumentRepository(ABC):
         raise NotImplementedError("Implement update_document method")
 
     @abstractmethod
-    def delete_document(self, title: str, owner_username: str) -> Document:
+    def delete_document(self, title: str, owner_username: str) -> bool:
         raise NotImplementedError("Implement delete_document method")

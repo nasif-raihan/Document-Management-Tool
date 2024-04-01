@@ -38,13 +38,11 @@ class DBDocumentRepository(DocumentRepository):
 
     def get_document(self, title: str, owner_username: str) -> Document | None:
         try:
-            logger.debug(f"{owner_username=}")
             db_document = DBDocument.objects.get(
                 title=title, owner__username=owner_username
             )
-            logger.debug(f"{db_document=}")
         except DBDocument.DoesNotExist:
-            raise RuntimeError("Invalid document information")
+            return None
         return self.to_document(db_document)
 
     def get_all_documents(self) -> list[Document]:
@@ -65,11 +63,14 @@ class DBDocumentRepository(DocumentRepository):
         db_document.shared_with = document.shared_with
         return self.to_document(db_document)
 
-    def delete_document(self, title: str, owner_username: str) -> Document:
+    def delete_document(self, title: str, owner_username: str) -> bool:
         document = self.get_document(title, owner_username)
+        if document is None:
+            return False
+
         db_document = self.to_db_document(document)
         db_document.delete()
-        return document
+        return True
 
     @classmethod
     def to_db_document(cls, document: Document) -> DBDocument:

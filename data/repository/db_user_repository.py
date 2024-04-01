@@ -17,12 +17,11 @@ class DBUserRepository(UserRepository):
             cls.__instance = DBUserRepository()
         return cls.__instance
 
-    def get_user(self, username: str) -> User:
+    def get_user(self, username: str) -> User | None:
         try:
             db_user = DBUser.objects.get(username=username)
         except DBUser.DoesNotExist:
-            raise RuntimeError("Username is not found")
-
+            return None
         return self.to_user(db_user)
 
     @classmethod

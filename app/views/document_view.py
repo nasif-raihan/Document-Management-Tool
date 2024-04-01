@@ -18,20 +18,17 @@ class DocumentView(View):
         self.__user_use_case = UserUseCase()
 
     def get(self, request) -> JsonResponse:
-        title = request.GET.get("documentTitle")
-        owner_username = request.GET.get("documentOwnerUsername")
-
-        # fmt: off
-        logger.debug(f"documentTitle={request.GET.get('documentTitle')}")
-        logger.debug(f"{title=}")
-        logger.debug(f"documentOwnerUsername={request.GET.get('documentOwnerUsername')}")
-        logger.debug(f"{owner_username=}")
-        # fmt: on
+        try:
+            payload = json.loads(request.body)
+            title = payload.get("documentTitle")
+            owner_username = payload.get("documentOwnerUsername")
+        except json.JSONDecodeError as e:
+            return JsonResponse(
+                data={"message": "Invalid request payload", "error": str(e)}
+            )
 
         if title is None and owner_username is None:
             documents = self.__document_use_case.get_all_documents().invoke()
-            for document in documents:
-                print(f"{document=}")
             return JsonResponse(
                 data={
                     "documentTitle": [document.title for document in documents],
@@ -163,21 +160,25 @@ class DocumentView(View):
         )
 
     def delete(self, request) -> JsonResponse:
-        title = request.GET.get("documentTitle")
-        owner_username = request.GET.get("documentOwnerUsername")
+        try:
+            payload = json.loads(request.body)
+            title = payload.get("documentTitle")
+            owner_username = payload.get("documentOwnerUsername")
+        except json.JSONDecodeError as e:
+            return JsonResponse(
+                data={"message": "Invalid request payload", "error": str(e)}
+            )
 
-        owner = self.__user_use_case.get_user().invoke(username=owner_username)
-        document = self.__document_use_case.get_document_details().invoke(
-            title=title, owner_username=owner.username
+        is_deleted = self.__document_use_case.delete_document().invoke(
+            title, owner_username
         )
-        if document is None:
-            return JsonResponse(data={"message": "Invalid payload"})
+        if is_deleted:
+            message = "Document deleted successfully"
+        else:
+            message = "No matching data is found for deletion"
 
         return JsonResponse(
-            data={
-                "documentTitle": document.title,
-                "message": "Document deleted successfully",
-            },
+            data={"isDeleted": is_deleted, "message": message},
             status=200,
         )
 
