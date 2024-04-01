@@ -65,13 +65,13 @@ class DocumentView(View):
 
     def post(self, request) -> JsonResponse:
         try:
-            data = json.loads(request.body)
+            payload = json.loads(request.body)
         except json.JSONDecodeError as e:
             return JsonResponse(
                 data={"message": "Invalid request payload", "errors": str(e)}
             )
 
-        form = self.__get_document_form(data)
+        form = self.__get_document_form(payload)
 
         if not form.is_valid():
             return JsonResponse(
@@ -113,13 +113,13 @@ class DocumentView(View):
 
     def put(self, request) -> JsonResponse:
         try:
-            data = json.loads(request.body)
+            payload = json.loads(request.body)
         except json.JSONDecodeError as e:
             return JsonResponse(
                 data={"message": "Invalid request payload", "errors": str(e)}
             )
 
-        form = self.__get_document_form(data)
+        form = self.__get_document_form(payload)
 
         if not form.is_valid():
             return JsonResponse(

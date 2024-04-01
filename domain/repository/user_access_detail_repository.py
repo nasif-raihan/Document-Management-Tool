@@ -13,7 +13,7 @@ class UserAccessDetailRepository(ABC):
     @abstractmethod
     def get_user_access_details(
         self, document_title: str, shared_user_username: str
-    ) -> UserAccessDetail:
+    ) -> UserAccessDetail | None:
         raise NotImplementedError("Implement get_user_access_detail method")
 
     @abstractmethod
@@ -25,5 +25,5 @@ class UserAccessDetailRepository(ABC):
     @abstractmethod
     def delete_user_access_details(
         self, document_title: str, shared_user_username: str
-    ) -> UserAccessDetail:
+    ) -> bool:
         raise NotImplementedError("Implement delete_user_access_details method")

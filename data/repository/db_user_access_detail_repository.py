@@ -24,13 +24,13 @@ class DBUserAccessDetailRepository(UserAccessDetailRepository):
 
     def get_user_access_details(
         self, document_title: str, shared_user_username: str
-    ) -> UserAccessDetail:
+    ) -> UserAccessDetail | None:
         try:
             db_user_access_detail = DBUserAccessDetail.objects.get(
                 document__title=document_title, user__username=shared_user_username
             )
         except DBUserAccessDetail.DoesNotExist:
-            raise RuntimeError("Invalid user access detail")
+            return None
         return self.to_user_access_detail(db_user_access_detail)
 
     def update_user_access_details(
@@ -52,13 +52,15 @@ class DBUserAccessDetailRepository(UserAccessDetailRepository):
 
     def delete_user_access_details(
         self, document_title: str, shared_user_username: str
-    ) -> UserAccessDetail:
+    ) -> bool:
         user_access_details = self.get_user_access_details(
             document_title, shared_user_username
         )
+        if user_access_details is None:
+            return False
         db_user_access_detail = self.to_db_user_access_detail(user_access_details)
         db_user_access_detail.delete()
-        return user_access_details
+        return True
 
     @classmethod
     def to_db_user_access_detail(

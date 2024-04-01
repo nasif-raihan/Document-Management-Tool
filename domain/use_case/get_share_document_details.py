@@ -8,7 +8,7 @@ class GetShareDocumentDetails:
 
     def invoke(
         self, document_title: str, shared_user_username: str
-    ) -> UserAccessDetail:
+    ) -> UserAccessDetail | None:
         return self.user_access_detail_repository.get_user_access_details(
             document_title, shared_user_username
         )

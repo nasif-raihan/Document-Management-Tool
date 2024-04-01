@@ -29,15 +29,15 @@ class ShareDocumentUseCase:
 
     def get_share_document_details(self) -> GetShareDocumentDetails:
         return GetShareDocumentDetails(
-            user_access_detail_repository=self.repository.user_access_detail_repository
+            user_access_detail_repository=self.__repository.user_access_detail_repository
         )
 
     def update_share_document_details(self) -> UpdateShareDocumentDetails:
         return UpdateShareDocumentDetails(
-            user_access_detail_repository=self.repository.user_access_detail_repository
+            user_access_detail_repository=self.__repository.user_access_detail_repository
         )
 
     def delete_share_document_details(self) -> DeleteShareDocumentDetails:
         return DeleteShareDocumentDetails(
-            user_access_detail_repository=self.repository.user_access_detail_repository
+            user_access_detail_repository=self.__repository.user_access_detail_repository
         )

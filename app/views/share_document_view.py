@@ -16,8 +16,14 @@ class ShareDocumentView(View):
         self.__share_document_use_case = ShareDocumentUseCase()
 
     def get(self, request) -> JsonResponse:
-        document_title = request.GET.get("documentTitle")
-        shared_user_username = request.GET.get("sharedUserUsername")
+        try:
+            payload = json.loads(request.body)
+            document_title = payload.get("documentTitle")
+            shared_user_username = payload.get("sharedUserUsername")
+        except json.JSONDecodeError as e:
+            return JsonResponse(
+                data={"message": "Invalid request payload", "errors": str(e)}
+            )
 
         user_access_detail = (
             self.__share_document_use_case.get_share_document_details().invoke(
@@ -25,7 +31,7 @@ class ShareDocumentView(View):
             )
         )
         if user_access_detail is None:
-            return JsonResponse(data={"message": "Invalid request payload"})
+            return JsonResponse(data={"message": "Invalid request payload"}, status=400)
 
         return JsonResponse(
             data={
@@ -39,16 +45,17 @@ class ShareDocumentView(View):
 
     def post(self, request) -> JsonResponse:
         try:
-            data = json.loads(request.body)
+            payload = json.loads(request.body)
         except json.JSONDecodeError as e:
             return JsonResponse(
                 data={"message": "Invalid request payload", "errors": str(e)}
             )
 
-        form = self.__get_share_document_form(data)
+        form = self.__get_share_document_form(payload)
         if not form.is_valid():
             return JsonResponse(
-                data={"message": "Invalid request payload", "errors": form.errors}
+                data={"message": "Invalid request payload", "errors": form.errors},
+                status=400,
             )
 
         document_title = form.cleaned_data.get("document_title")
@@ -84,16 +91,17 @@ class ShareDocumentView(View):
 
     def put(self, request) -> JsonResponse:
         try:
-            data = json.loads(request.body)
+            payload = json.loads(request.body)
         except json.JSONDecodeError as e:
             return JsonResponse(
                 data={"message": "Invalid request payload", "errors": str(e)}
             )
 
-        form = self.__get_share_document_form(data)
+        form = self.__get_share_document_form(payload)
         if not form.is_valid():
             return JsonResponse(
-                data={"message": "Invalid request payload", "errors": form.errors}
+                data={"message": "Invalid request payload", "errors": form.errors},
+                status=400,
             )
 
         document_title = form.cleaned_data.get("document_title")
@@ -126,24 +134,27 @@ class ShareDocumentView(View):
         )
 
     def delete(self, request) -> JsonResponse:
-        document_title = request.GET.get("documentTitle")
-        shared_user_username = request.GET.get("sharedUserUsername")
+        try:
+            payload = json.loads(request.body)
+            document_title = payload.get("documentTitle")
+            shared_user_username = payload.get("sharedUserUsername")
+        except json.JSONDecodeError as e:
+            return JsonResponse(
+                data={"message": "Invalid request payload", "errors": str(e)}
+            )
 
-        user_access_detail = (
+        is_deleted = (
             self.__share_document_use_case.delete_share_document_details().invoke(
                 document_title, shared_user_username
             )
         )
-        if user_access_detail is None:
-            return JsonResponse(data={"message": "Invalid request payload"})
+        if is_deleted:
+            message = "Document share details is deleted successfully"
+        else:
+            message = "No matching data is found for deletion"
 
         return JsonResponse(
-            data={
-                "documentTitle": document_title,
-                "documentOwnerUsername": user_access_detail.document.owner,
-                "permissionType": user_access_detail.permission_type,
-                "sharedUserUsernames": shared_user_username,
-            },
+            data={"isDeleted": is_deleted, "message": message},
             status=200,
         )
 
