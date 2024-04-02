@@ -17,7 +17,7 @@ class DBUserRepository(UserRepository):
             cls.__instance = DBUserRepository()
         return cls.__instance
 
-    def get_user(self, username: str) -> User | None:
+    def get_user(self, username: str) -> DBUser | None:
         try:
             db_user = DBUser.objects.get(username=username)
         except DBUser.DoesNotExist:
@@ -27,3 +27,7 @@ class DBUserRepository(UserRepository):
     @classmethod
     def to_user(cls, db_user: DBUser) -> User:
         return User(username=db_user.username, password=Password(db_user.password))
+
+    @classmethod
+    def to_db_user(cls, username: str) -> DBUser:
+        return DBUser.objects.get(username=username)

@@ -29,16 +29,21 @@ class DocumentView(View):
 
         if title is None and owner_username is None:
             documents = self.__document_use_case.get_all_documents().invoke()
+            documents_dict = []
+            for document in documents:
+                document_dict = {
+                    "documentTitle": document.title,
+                    "content": document.content,
+                    "documentOwnerUsername": document.owner.username,
+                    "sharedUserUsernames": [
+                        user.username for user in document.shared_with.all()
+                    ],
+                }
+                documents_dict.append(document_dict)
+
             return JsonResponse(
                 data={
-                    "documentTitle": [document.title for document in documents],
-                    "content": [document.content for document in documents],
-                    "documentOwnerUsername": [
-                        document.owner.username for document in documents
-                    ],
-                    "sharedUserUsernames": [
-                        document.shared_with for document in documents
-                    ],
+                    "documents": documents_dict,
                     "message": "Fetched all created documents.",
                 },
                 status=200,
@@ -57,7 +62,7 @@ class DocumentView(View):
                 "content": document.content,
                 "documentOwnerUsername": document.owner.username,
                 "sharedUserUsernames": [
-                    share_user.username for share_user in document.shared_with
+                    share_user.username for share_user in document.shared_with.all()
                 ],
             },
             status=200,
@@ -104,7 +109,7 @@ class DocumentView(View):
                 "content": document.content,
                 "documentOwnerUsername": document.owner.username,
                 "sharedUserUsernames": [
-                    share_user.username for share_user in document.shared_with
+                    share_user.username for share_user in document.shared_with.all()
                 ],
                 "message": "Document created successfully",
             },
@@ -152,7 +157,7 @@ class DocumentView(View):
                 "content": document.content,
                 "documentOwnerUsername": document.owner.username,
                 "sharedUserUsernames": [
-                    share_user.username for share_user in document.shared_with
+                    share_user.username for share_user in document.shared_with.all()
                 ],
                 "message": "Document updated successfully",
             },
@@ -164,7 +169,6 @@ class DocumentView(View):
             payload = json.loads(request.body)
             title = payload.get("documentTitle")
             owner_username = payload.get("documentOwnerUsername")
-            logger.debug(f"{title=}")
         except json.JSONDecodeError as e:
             return JsonResponse(
                 data={"message": "Invalid request payload", "error": str(e)}

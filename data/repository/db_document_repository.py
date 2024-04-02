@@ -25,14 +25,14 @@ class DBDocumentRepository(DocumentRepository):
             )
             db_document.save()
 
-            for shared_user in document.shared_with:
-                shared_with_user = self._db_user_repository.get_user(
-                    username=shared_user.username
-                )
-                if shared_with_user:
-                    db_document.shared_with.add(shared_with_user)
+            # fmt: off
+            for user in document.shared_with:
+                shared_user = self._db_user_repository.get_user(username=user.username)
+                if shared_user:
+                    db_shared_user = self._db_user_repository.to_db_user(shared_user.username)
+                    db_document.shared_with.add(db_shared_user)
                 else:
-                    db_document.shared_with.create(username=shared_with_user.username)
+                    db_document.shared_with.create(username=user.username)
             return self.to_document(db_document)
         return self.update_document(old_document)
 
@@ -51,35 +51,37 @@ class DBDocumentRepository(DocumentRepository):
 
     def update_document(self, document: Document) -> Document:
         try:
+            # title and owner should not be updated
             db_document = DBDocument.objects.get(
-                title=document.title, owner=document.owner
+                title=document.title, owner__username=document.owner.username
             )
         except DBDocument.DoesNotExist:
             raise RuntimeError("Invalid document information")
 
         db_document.title = document.title
         db_document.content = document.content
-        db_document.owner = document.owner
-        db_document.shared_with = document.shared_with
+        db_document.owner = DBUser.objects.get(username=document.owner.username)
+
+        # fmt: off
+        for user in document.shared_with:
+            shared_user = self._db_user_repository.get_user(username=user.username)
+            if shared_user:
+                db_shared_user = self._db_user_repository.to_db_user(shared_user.username)
+                db_document.shared_with.add(db_shared_user)
+            else:
+                db_document.shared_with.create(username=user.username)
+        # fmt: on
         return self.to_document(db_document)
 
     def delete_document(self, title: str, owner_username: str) -> bool:
-        document = self.get_document(title, owner_username)
-        if document is None:
+        db_document = DBDocument.objects.get(
+            title=title, owner__username=owner_username
+        )
+        if db_document is None:
             return False
 
-        db_document = self.to_db_document(document)
         db_document.delete()
         return True
-
-    @classmethod
-    def to_db_document(cls, document: Document) -> DBDocument:
-        return DBDocument(
-            title=document.title,
-            content=document.content,
-            owner=document.owner,
-            shared_with=document.shared_with,
-        )
 
     @classmethod
     def to_document(cls, db_document: DBDocument) -> Document:
