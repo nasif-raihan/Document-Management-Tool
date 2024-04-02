@@ -71,13 +71,15 @@ This Django project is a document management tool designed to facilitate efficie
              "sharedUserUsernames": ["user1", "user2"]
          }
          ```
-   - ### Update Document Details
+
+   - ### Update Document Details 
+       - _Document title and owner can not be updated_
        - **Request URL:** `/documents`
        - **Request Method:** `PUT`
        - **Request Payload:**
          ```json
          {
-             "documentTitle": "Updated Document Title",
+             "documentTitle": "Document Title",
              "content": "Updated content here",
              "documentOwnerUsername": "test_user",
              "sharedUserUsernames": ["user1", "user2"]
@@ -86,7 +88,7 @@ This Django project is a document management tool designed to facilitate efficie
        - **Response:**
          ```json
          {
-             "documentTitle": "Updated Document Title",
+             "documentTitle": "Document Title",
              "content": "Updated content here",
              "documentOwnerUsername": "test_user",
              "sharedUserUsernames": ["user1", "user2"]
